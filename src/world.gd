@@ -4,12 +4,20 @@ const TILE_SIZE = 64
 export(int) var w = 96
 export(int) var h = 54
 
+export(int) var camera_zoom = 1
+onready var camera = $Camera2D
+
 var active = false
 var state = []
 
 func _ready() -> void:
+	$HUD/Control/Label.text = "Playing is " + str(active)
 	cell_size.x = TILE_SIZE
 	cell_size.y = TILE_SIZE
+	var world_size_x = w * TILE_SIZE
+	var world_size_y = h * TILE_SIZE
+	camera.position = Vector2(world_size_x, world_size_y)/2
+	camera.zoom = Vector2(world_size_x, world_size_y)/Vector2(1280,720) * camera_zoom
 	for x in range(w):
 		var t = []
 		for y in range(h):
@@ -18,15 +26,15 @@ func _ready() -> void:
 		state.append(t)
 
 func _input(event) -> void:
-	if event.is_action_pressed("ui_cancel"):
+	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("right_mouse"):
 		active = !active
+		$HUD/Control/Label.text = "Playing is " + str(active)
 		print("playing is ", active)
 	if event.is_action_pressed("ui_accept"):
 		pass
 	if event.is_action_pressed("left_mouse"):
 		var pos = (get_local_mouse_position()/TILE_SIZE).floor()
 		set_cellv(pos, 1 - get_cellv(pos))
-		pass
 
 func tick() -> void:
 	if !active:

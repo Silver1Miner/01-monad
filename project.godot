@@ -15,6 +15,10 @@ config/description="I am the Monad, the Ultimate, the All, the One. All that exi
 run/main_scene="res://src/menu.tscn"
 config/icon="res://icon.png"
 
+[autoload]
+
+Music="*res://src/music.tscn"
+
 [display]
 
 window/size/width=1920

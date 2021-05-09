@@ -10,10 +10,11 @@ config_version=4
 
 [application]
 
-config/name="01 Monad"
+config/name="The Monad"
 config/description="I am the Monad, the Ultimate, the All, the One. All that exists comes from me."
 run/main_scene="res://src/menu.tscn"
-config/icon="res://icon.png"
+config/icon="res://monad.png"
+config/windows_native_icon="res://monad.ico"
 
 [autoload]
 

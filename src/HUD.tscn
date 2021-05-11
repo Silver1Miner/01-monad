@@ -22,9 +22,13 @@ __meta__ = {
 }
 
 [node name="Label" type="Label" parent="Control"]
-margin_right = 40.0
-margin_bottom = 14.0
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -112.0
+margin_right = 112.0
+margin_bottom = 96.0
 text = "Label"
+align = 1
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -37,6 +41,16 @@ anchor_bottom = 1.0
 margin_left = -732.0
 margin_top = -102.0
 text = "Quit to main menu"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Generation" type="Label" parent="Control"]
+anchor_top = 1.0
+anchor_bottom = 1.0
+margin_top = -96.0
+margin_right = 464.0
+text = "Generation"
 __meta__ = {
 "_edit_use_anchors_": false
 }

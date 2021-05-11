@@ -1,17 +1,20 @@
 extends TileMap
 
 const TILE_SIZE = 64
-export(int) var w = 96
-export(int) var h = 54
+export(int) var w = 15
+export(int) var h = 10
 
 export(int) var camera_zoom = 1
 onready var camera = $Camera2D
 
+var generation = 0
 var active = false
 var state = []
+var target_state = []
 
 func _ready() -> void:
 	$HUD/Control/Label.text = "Playing is " + str(active)
+	$HUD/Control/Generation.text = "Generation: " + str(generation)
 	cell_size.x = TILE_SIZE
 	cell_size.y = TILE_SIZE
 	var world_size_x = w * TILE_SIZE
@@ -29,11 +32,11 @@ func _input(event) -> void:
 	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("right_mouse"):
 		active = !active
 		$HUD/Control/Label.text = "Playing is " + str(active)
-		print("playing is ", active)
 	if event.is_action_pressed("ui_accept"):
-		pass
+		print(state)
 	if event.is_action_pressed("left_mouse"):
 		var pos = (get_local_mouse_position()/TILE_SIZE).floor()
+		state[pos.x][pos.y] = 1 - get_cellv(pos)
 		set_cellv(pos, 1 - get_cellv(pos))
 
 func tick() -> void:
@@ -66,6 +69,12 @@ var accumulated = 0
 func _process(delta):
 	if active:
 		accumulated += delta
-		if accumulated > 0.3:
+		if accumulated > 1.0:
 			accumulated = 0
-			tick()
+			if state != target_state:
+				tick()
+				generation += 1
+				$HUD/Control/Generation.text = "Generation: " + str(generation)
+
+func print_state() -> void:
+	print(state)

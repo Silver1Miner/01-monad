@@ -76,14 +76,8 @@ margin_right = 420.0
 margin_bottom = 346.0
 text = "Free Play"
 
-[node name="settings" type="Button" parent="menu_options"]
+[node name="quit" type="Button" parent="menu_options"]
 margin_top = 366.0
 margin_right = 420.0
 margin_bottom = 468.0
-text = "Settings"
-
-[node name="quit" type="Button" parent="menu_options"]
-margin_top = 488.0
-margin_right = 420.0
-margin_bottom = 590.0
 text = "Quit"

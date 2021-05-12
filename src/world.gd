@@ -1,10 +1,10 @@
 extends TileMap
 
 const TILE_SIZE = 64
-export(int) var w = 15
-export(int) var h = 10
+export(int) var w = 30
+export(int) var h = 12
 
-export(int) var camera_zoom = 1
+#export(int) var camera_zoom = 1
 onready var camera = $Camera2D
 
 var generation = 0
@@ -17,10 +17,10 @@ func _ready() -> void:
 	$HUD/Control/Generation.text = "Generation: " + str(generation)
 	cell_size.x = TILE_SIZE
 	cell_size.y = TILE_SIZE
-	var world_size_x = w * TILE_SIZE
-	var world_size_y = h * TILE_SIZE
-	camera.position = Vector2(world_size_x, world_size_y)/2
-	camera.zoom = Vector2(world_size_x, world_size_y)/Vector2(1280,720) * camera_zoom
+	#var world_size_x = w * TILE_SIZE
+	#var world_size_y = h * TILE_SIZE
+	#camera.position = Vector2(world_size_x, world_size_y)/2
+	#camera.zoom = Vector2(world_size_x, world_size_y)/Vector2(1280,720) * camera_zoom
 	for x in range(w):
 		var t = []
 		for y in range(h):
@@ -30,14 +30,17 @@ func _ready() -> void:
 
 func _input(event) -> void:
 	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("right_mouse"):
-		active = !active
-		$HUD/Control/Label.text = "Playing is " + str(active)
+		var pos = (get_local_mouse_position()/TILE_SIZE).floor()
+		if pos.x >= 0 and pos.x < w and pos.y >= 0 and pos.y < h:
+			active = !active
+			$HUD/Control/Label.text = "Playing is " + str(active)
 	if event.is_action_pressed("ui_accept"):
 		print(state)
 	if event.is_action_pressed("left_mouse"):
 		var pos = (get_local_mouse_position()/TILE_SIZE).floor()
-		state[pos.x][pos.y] = 1 - get_cellv(pos)
-		set_cellv(pos, 1 - get_cellv(pos))
+		if pos.x >= 0 and pos.x < w and pos.y >= 0 and pos.y < h:
+			state[pos.x][pos.y] = 1 - get_cellv(pos)
+			set_cellv(pos, 1 - get_cellv(pos))
 
 func tick() -> void:
 	if !active:

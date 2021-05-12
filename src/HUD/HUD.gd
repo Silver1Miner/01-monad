@@ -6,4 +6,4 @@ func _ready():
 	pass
 
 func _on_quit_to_main_pressed() -> void:
-		if get_tree().change_scene("res://src/menu.tscn") != OK: push_error("fail to load main menu")
+	if get_tree().change_scene("res://src/menu.tscn") != OK: push_error("fail to load main menu")

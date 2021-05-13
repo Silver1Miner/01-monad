@@ -4,8 +4,9 @@ const TILE_SIZE = 64
 export(int) var w = 30
 export(int) var h = 12
 
-#export(int) var camera_zoom = 1
-onready var camera = $Camera2D
+onready var toggle_button = $HUD/Control/toggle_time
+onready var reset_button = $HUD/Control/reset
+onready var generation_display = $HUD/Control/Generation
 
 var generation = 0
 var active = false
@@ -14,33 +15,47 @@ var target_state = []
 
 func _ready() -> void:
 	$HUD/Control/Label.text = "Playing is " + str(active)
-	$HUD/Control/Generation.text = "Generation: " + str(generation)
+	generation_display.text = "Generation: " + str(generation)
+	if toggle_button.connect("toggled", self, "_on_play_toggled") != OK:
+		push_error("toggle button connect fail")
+	if reset_button.connect("pressed", self, "reset") != OK:
+		push_error("reset button connect fail")
 	cell_size.x = TILE_SIZE
 	cell_size.y = TILE_SIZE
-	#var world_size_x = w * TILE_SIZE
-	#var world_size_y = h * TILE_SIZE
-	#camera.position = Vector2(world_size_x, world_size_y)/2
-	#camera.zoom = Vector2(world_size_x, world_size_y)/Vector2(1280,720) * camera_zoom
 	for x in range(w):
 		var t = []
 		for y in range(h):
 			set_cell(x, y, 0)
 			t.append(0)
-		state.append(t)
+		state.append(t) # TODO: define and load an initial state
 
 func _input(event) -> void:
-	if event.is_action_pressed("ui_cancel") or event.is_action_pressed("right_mouse"):
-		var pos = (get_local_mouse_position()/TILE_SIZE).floor()
-		if pos.x >= 0 and pos.x < w and pos.y >= 0 and pos.y < h:
-			active = !active
-			$HUD/Control/Label.text = "Playing is " + str(active)
-	if event.is_action_pressed("ui_accept"):
+	if event.is_action_pressed("right_mouse"): # debugging
 		print(state)
-	if event.is_action_pressed("left_mouse"):
+	if event.is_action_pressed("left_mouse"): # changing tiles
 		var pos = (get_local_mouse_position()/TILE_SIZE).floor()
 		if pos.x >= 0 and pos.x < w and pos.y >= 0 and pos.y < h:
 			state[pos.x][pos.y] = 1 - get_cellv(pos)
 			set_cellv(pos, 1 - get_cellv(pos))
+
+func _on_play_toggled(toggled) -> void:
+	active = toggled
+	$HUD/Control/Label.text = "Playing is " + str(active)
+	if toggled:
+		toggle_button.text = "Playing"
+	else:
+		toggle_button.text = "Play"
+
+func _on_reset_pressed() -> void:
+	reset()
+
+func reset() -> void:
+	generation = 0
+	generation_display.text = "Generation: " + str(generation)
+	for x in range(w):
+		for y in range(h):
+			set_cell(x, y, 0)
+	# TODO: load an initial state instead of wiping
 
 func tick() -> void:
 	if !active:
@@ -77,7 +92,7 @@ func _process(delta):
 			if state != target_state:
 				tick()
 				generation += 1
-				$HUD/Control/Generation.text = "Generation: " + str(generation)
+				generation_display.text = "Generation: " + str(generation)
 
 func print_state() -> void:
 	print(state)

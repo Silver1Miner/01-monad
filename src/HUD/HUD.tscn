@@ -56,4 +56,29 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="toggle_time" type="Button" parent="Control"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -202.0
+margin_top = -180.0
+margin_right = 202.0
+margin_bottom = -126.0
+toggle_mode = true
+text = "Play"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="textbox" parent="Control" instance=ExtResource( 3 )]
+visible = false
+
+[node name="reset" type="Button" parent="Control"]
+margin_top = 900.0
+margin_right = 132.0
+margin_bottom = 954.0
+text = "Reset"
+__meta__ = {
+"_edit_use_anchors_": false
+}

@@ -22,26 +22,36 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Label" type="Label" parent="Control"]
-anchor_top = 1.0
-anchor_bottom = 1.0
-margin_top = -312.0
-margin_right = 112.0
-margin_bottom = -264.0
-text = "Label"
-align = 1
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="quit_to_main" type="Button" parent="Control"]
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -372.0
-margin_top = -54.0
+margin_left = -400.0
+margin_top = -80.0
+margin_right = -28.0
+margin_bottom = -26.0
 text = "Quit to main menu"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="reset" type="Button" parent="Control"]
+margin_left = 140.0
+margin_top = 850.0
+margin_right = 272.0
+margin_bottom = 904.0
+text = "Reset"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="moves_display" type="Label" parent="Control"]
+margin_left = 20.0
+margin_top = 940.0
+margin_right = 188.0
+margin_bottom = 988.0
+text = "Moves: 0"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -49,9 +59,11 @@ __meta__ = {
 [node name="Generation" type="Label" parent="Control"]
 anchor_top = 1.0
 anchor_bottom = 1.0
-margin_top = -48.0
-margin_right = 232.0
-text = "Generation"
+margin_left = 20.0
+margin_top = -80.0
+margin_right = 252.0
+margin_bottom = -32.0
+text = "Generation: 0"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -72,13 +84,3 @@ __meta__ = {
 }
 
 [node name="textbox" parent="Control" instance=ExtResource( 3 )]
-visible = false
-
-[node name="reset" type="Button" parent="Control"]
-margin_top = 900.0
-margin_right = 132.0
-margin_bottom = 954.0
-text = "Reset"
-__meta__ = {
-"_edit_use_anchors_": false
-}

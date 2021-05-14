@@ -7,27 +7,30 @@ export(int) var h = 12
 onready var toggle_button = $HUD/Control/toggle_time
 onready var reset_button = $HUD/Control/reset
 onready var generation_display = $HUD/Control/Generation
+onready var moves_display = $HUD/Control/moves_display
 
-var generation = 0
-var active = false
-var state = []
-var target_state = []
+var generation := 0
+var moves := 0
+var active := false
+var initial_state := []
+var state := []
+var target_state := []
 
 func _ready() -> void:
-	$HUD/Control/Label.text = "Playing is " + str(active)
+	define_level(1, 1)
 	generation_display.text = "Generation: " + str(generation)
+	moves_display.text = "Moves: " + str(moves)
 	if toggle_button.connect("toggled", self, "_on_play_toggled") != OK:
 		push_error("toggle button connect fail")
 	if reset_button.connect("pressed", self, "reset") != OK:
 		push_error("reset button connect fail")
 	cell_size.x = TILE_SIZE
 	cell_size.y = TILE_SIZE
-	for x in range(w):
-		var t = []
-		for y in range(h):
-			set_cell(x, y, 0)
-			t.append(0)
-		state.append(t) # TODO: define and load an initial state
+	reset()
+
+func define_level(initial, target):
+	initial_state = Levels.initials[initial]
+	target_state = Levels.targets[target]
 
 func _input(event) -> void:
 	if event.is_action_pressed("right_mouse"): # debugging
@@ -37,25 +40,27 @@ func _input(event) -> void:
 		if pos.x >= 0 and pos.x < w and pos.y >= 0 and pos.y < h:
 			state[pos.x][pos.y] = 1 - get_cellv(pos)
 			set_cellv(pos, 1 - get_cellv(pos))
+			moves += 1
+			moves_display.text = "Moves: " + str(moves)
 
 func _on_play_toggled(toggled) -> void:
 	active = toggled
-	$HUD/Control/Label.text = "Playing is " + str(active)
 	if toggled:
+		reset_button.disabled = toggled
 		toggle_button.text = "Playing"
 	else:
+		reset_button.disabled = toggled
 		toggle_button.text = "Play"
-
-func _on_reset_pressed() -> void:
-	reset()
 
 func reset() -> void:
 	generation = 0
+	moves = 0
 	generation_display.text = "Generation: " + str(generation)
+	moves_display.text = "Moves: " + str(moves)
+	state = initial_state
 	for x in range(w):
 		for y in range(h):
-			set_cell(x, y, 0)
-	# TODO: load an initial state instead of wiping
+			set_cell(x, y, state[x][y])
 
 func tick() -> void:
 	if !active:
@@ -81,18 +86,19 @@ func tick() -> void:
 	for x in range(w):
 		for y in range(h):
 			set_cell(x, y, state[x][y])
+	if state == target_state:
+		win()
+
+func win() -> void:
+	_on_play_toggled(false)
+	print("target state reached")
 
 var accumulated = 0
-
 func _process(delta):
 	if active:
 		accumulated += delta
 		if accumulated > 1.0:
 			accumulated = 0
-			if state != target_state:
-				tick()
-				generation += 1
-				generation_display.text = "Generation: " + str(generation)
-
-func print_state() -> void:
-	print(state)
+			tick()
+			generation += 1
+			generation_display.text = "Generation: " + str(generation)

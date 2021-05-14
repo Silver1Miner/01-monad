@@ -9,7 +9,7 @@ onready var nametag = $textbox/nametag
 onready var timer = $Timer
 
 func _ready() -> void:
-	timer.wait_time = 0.1
+	timer.wait_time = 0.05
 	timer.autostart = true
 	if timer.connect("timeout", self, "_on_timer_timeout") != OK: push_error("timer connect fail")
 	initialize(Dialogue.scene_1)

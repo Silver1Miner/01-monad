@@ -20,6 +20,7 @@ config/windows_native_icon="res://monad.ico"
 
 Music="*res://src/music.tscn"
 Dialogue="*res://src/data/Dialogue.tscn"
+Levels="*res://src/data/Levels.tscn"
 
 [display]
 

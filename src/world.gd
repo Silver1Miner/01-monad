@@ -29,12 +29,12 @@ func _ready() -> void:
 	reset()
 
 func define_level(initial, target):
-	initial_state = Levels.initials[initial]
-	target_state = Levels.targets[target]
+	initial_state = Levels.initials[initial].duplicate(true)
+	target_state = Levels.targets[target].duplicate(true)
 
 func _input(event) -> void:
-	if event.is_action_pressed("right_mouse"): # debugging
-		print(state)
+	if event.is_action_pressed("ui_cancel"): # debugging
+		print(initial_state)
 	if event.is_action_pressed("left_mouse"): # changing tiles
 		var pos = (get_local_mouse_position()/TILE_SIZE).floor()
 		if pos.x >= 0 and pos.x < w and pos.y >= 0 and pos.y < h:
@@ -57,7 +57,7 @@ func reset() -> void:
 	moves = 0
 	generation_display.text = "Generation: " + str(generation)
 	moves_display.text = "Moves: " + str(moves)
-	state = initial_state
+	state = initial_state.duplicate(true)
 	for x in range(w):
 		for y in range(h):
 			set_cell(x, y, state[x][y])

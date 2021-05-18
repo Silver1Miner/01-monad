@@ -19,8 +19,8 @@ config/windows_native_icon="res://monad.ico"
 [autoload]
 
 Music="*res://src/music.tscn"
-Dialogue="*res://src/data/Dialogue.tscn"
 Levels="*res://src/data/Levels.tscn"
+PlayerData="*res://src/player/PlayerData.tscn"
 
 [display]
 

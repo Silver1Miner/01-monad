@@ -12,7 +12,7 @@ func _ready() -> void:
 	timer.wait_time = 0.05
 	timer.autostart = true
 	if timer.connect("timeout", self, "_on_timer_timeout") != OK: push_error("timer connect fail")
-	initialize(Dialogue.scene_1)
+	initialize(Levels.dialogue[1])
 	timer.start()
 
 func initialize(scene) -> void:

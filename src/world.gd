@@ -4,40 +4,64 @@ const TILE_SIZE = 64
 export(int) var w = 30
 export(int) var h = 12
 
-onready var toggle_button = $HUD/Control/toggle_time
-onready var reset_button = $HUD/Control/reset
+onready var toggle_button = $HUD/Control/control_buttons/toggle_time
+onready var reset_button = $HUD/Control/control_buttons/reset
+onready var next_button = $HUD/Control/control_buttons/next_level
 onready var generation_display = $HUD/Control/Generation
 onready var moves_display = $HUD/Control/moves_display
 onready var moves_remaining_display = $HUD/Control/remaining_moves
 onready var minimap = $HUD/Control/minimap
+onready var textbox = $HUD/Control/textbox
+export var timestep = 0.5
 
-var current_level = 1
+var has_target = false
 var generation := 0
 var moves := 0
-var initial_moves_left := 3
-var moves_left := 3
+var initial_moves_left := 99
+var moves_left := 99
 var active := false
 var initial_state := []
 var state := []
 var target_state := []
 
 func _ready() -> void:
-	define_level(current_level)
+	next_button.visible = false
 	generation_display.text = "Generation: " + str(generation)
 	moves_display.text = "Moves: " + str(moves)
 	if toggle_button.connect("toggled", self, "_on_play_toggled") != OK:
 		push_error("toggle button connect fail")
-	if reset_button.connect("pressed", self, "reset") != OK:
+	if reset_button.connect("pressed", self, "_reset") != OK:
 		push_error("reset button connect fail")
+	if next_button.connect("pressed", self, "_next_level") != OK:
+		push_error("next level button connect fail")
 	cell_size.x = TILE_SIZE
 	cell_size.y = TILE_SIZE
-	reset()
+	define_level(PlayerData.current_level)
 
 func define_level(level):
-	initial_state = Levels.initials[level].duplicate(true)
-	target_state = Levels.targets[level].duplicate(true)
-	initial_moves_left = Levels.moves_left[level]
-	minimap.update()
+	if level in Levels.initials:
+		initial_state = Levels.initials[level].duplicate(true)
+	else:
+		fill_grid(initial_state, 0)
+	if level in Levels.targets:
+		target_state = Levels.targets[level].duplicate(true)
+	else:
+		fill_grid(target_state, 1)
+	if level in Levels.moves_left:
+		initial_moves_left = Levels.moves_left[level]
+	if level > 0:
+		has_target = true
+		minimap.update()
+	if level in Levels.dialogue:
+		textbox.initialize(Levels.dialogue[level])
+	_reset()
+
+func fill_grid(grid, value) -> void:
+	grid.clear()
+	for x in w:
+		grid.append([])
+		for y in h:
+			grid[x].append(value)
 
 func _input(event) -> void:
 	if event.is_action_pressed("ui_cancel"): # debugging
@@ -61,7 +85,7 @@ func _on_play_toggled(toggled) -> void:
 		reset_button.disabled = toggled
 		toggle_button.text = "Play"
 
-func reset() -> void:
+func _reset() -> void:
 	generation = 0
 	moves = 0
 	moves_left = initial_moves_left
@@ -73,7 +97,7 @@ func reset() -> void:
 		for y in range(h):
 			set_cell(x, y, state[x][y])
 
-func tick() -> void:
+func _tick() -> void:
 	if !active:
 		return
 	for x in range(w):
@@ -97,19 +121,29 @@ func tick() -> void:
 	for x in range(w):
 		for y in range(h):
 			set_cell(x, y, state[x][y])
-	if state == target_state:
-		win()
+	if has_target and state == target_state:
+		_win()
+		has_target = false
 
-func win() -> void:
-	_on_play_toggled(false)
+func _win() -> void:
+	#active = false
+	#reset_button.disabled = false
+	#toggle_button.text = "Play"
 	print("target state reached")
+	next_button.visible = true
+
+func _next_level() -> void:
+	PlayerData.current_level += 1
+	if PlayerData.current_level in Levels.dialogue:
+		define_level(PlayerData.current_level)
+	next_button.visible = false
 
 var accumulated = 0
 func _process(delta):
 	if active:
 		accumulated += delta
-		if accumulated > 1.0:
+		if accumulated > timestep:
 			accumulated = 0
-			tick()
+			_tick()
 			generation += 1
 			generation_display.text = "Generation: " + str(generation)

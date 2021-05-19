@@ -12,10 +12,12 @@ func _ready() -> void:
 	timer.wait_time = 0.05
 	timer.autostart = true
 	if timer.connect("timeout", self, "_on_timer_timeout") != OK: push_error("timer connect fail")
-	initialize(Levels.dialogue[1])
-	timer.start()
+	#initialize(Levels.dialogue[1])
+	visible = false
 
 func initialize(scene) -> void:
+	visible = true
+	timer.start()
 	get_tree().paused = true
 	visible = true
 	dialogue = scene

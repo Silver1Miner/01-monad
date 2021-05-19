@@ -37,16 +37,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="reset" type="Button" parent="Control"]
-margin_left = 140.0
-margin_top = 800.0
-margin_right = 272.0
-margin_bottom = 854.0
-text = "Reset"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="remaining_moves" type="Label" parent="Control"]
 margin_left = 20.0
 margin_top = 880.0
@@ -79,22 +69,43 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="toggle_time" type="Button" parent="Control"]
+[node name="control_buttons" type="VBoxContainer" parent="Control"]
 anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-margin_left = -202.0
-margin_top = -180.0
-margin_right = 202.0
-margin_bottom = -126.0
+margin_left = -175.0
+margin_top = -280.0
+margin_right = 175.0
+margin_bottom = -78.0
+custom_constants/separation = 40
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="reset" type="Button" parent="Control/control_buttons"]
+margin_right = 350.0
+margin_bottom = 54.0
+text = "Reset"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="toggle_time" type="Button" parent="Control/control_buttons"]
+margin_top = 94.0
+margin_right = 350.0
+margin_bottom = 148.0
 toggle_mode = true
 text = "Play"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="textbox" parent="Control" instance=ExtResource( 3 )]
+[node name="next_level" type="Button" parent="Control/control_buttons"]
+margin_top = 188.0
+margin_right = 350.0
+margin_bottom = 242.0
+text = "Next level"
 
 [node name="target" type="Label" parent="Control"]
 margin_left = 1520.0
@@ -111,3 +122,6 @@ margin_left = -420.0
 margin_top = -260.0
 margin_right = -380.0
 margin_bottom = -220.0
+
+[node name="textbox" parent="Control" instance=ExtResource( 3 )]
+visible = false

@@ -1,8 +1,8 @@
 extends TileMap
 
-const TILE_SIZE = 64
-export(int) var w = 30
-export(int) var h = 12
+const TILE_SIZE = 32
+export(int) var w = 60
+export(int) var h = 24
 
 onready var toggle_button = $HUD/Control/control_buttons/toggle_time
 onready var reset_button = $HUD/Control/control_buttons/reset
@@ -12,7 +12,7 @@ onready var moves_display = $HUD/Control/moves_display
 onready var moves_remaining_display = $HUD/Control/remaining_moves
 onready var minimap = $HUD/Control/minimap
 onready var textbox = $HUD/Control/textbox
-export var timestep = 0.5
+export var timestep = 1.0
 
 var has_target = false
 var generation := 0
@@ -65,7 +65,8 @@ func fill_grid(grid, value) -> void:
 
 func _input(event) -> void:
 	if event.is_action_pressed("ui_cancel"): # debugging
-		print(initial_state)
+		print(state)
+		OS.set_clipboard(str(state))
 	if event.is_action_pressed("left_mouse"): # changing tiles
 		var pos = (get_local_mouse_position()/TILE_SIZE).floor()
 		if pos.x >= 0 and pos.x < w and pos.y >= 0 and pos.y < h and moves_left > 0:
@@ -86,6 +87,7 @@ func _on_play_toggled(toggled) -> void:
 		toggle_button.text = "Play"
 
 func _reset() -> void:
+	active = false
 	generation = 0
 	moves = 0
 	moves_left = initial_moves_left
@@ -133,6 +135,8 @@ func _win() -> void:
 	next_button.visible = true
 
 func _next_level() -> void:
+	active = false
+	toggle_button.pressed = false
 	PlayerData.current_level += 1
 	if PlayerData.current_level in Levels.dialogue:
 		define_level(PlayerData.current_level)

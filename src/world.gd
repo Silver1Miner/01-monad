@@ -7,9 +7,10 @@ export(int) var h = 24
 onready var toggle_button = $HUD/Control/control_buttons/toggle_time
 onready var reset_button = $HUD/Control/control_buttons/reset
 onready var next_button = $HUD/Control/control_buttons/next_level
-onready var generation_display = $HUD/Control/Generation
-onready var moves_display = $HUD/Control/moves_display
-onready var moves_remaining_display = $HUD/Control/remaining_moves
+onready var generation_display = $HUD/Control/left_pane/Generation
+onready var moves_display = $HUD/Control/left_pane/moves_display
+onready var moves_remaining_display = $HUD/Control/left_pane/remaining_moves
+onready var fast_button = $HUD/Control/left_pane/fast_button
 onready var minimap = $HUD/Control/minimap
 onready var textbox = $HUD/Control/textbox
 onready var title = $HUD/Control/level_title
@@ -37,6 +38,8 @@ func _ready() -> void:
 		push_error("reset button connect fail")
 	if next_button.connect("pressed", self, "_next_level") != OK:
 		push_error("next level button connect fail")
+	if fast_button.connect("toggled", self, "_on_fast_toggled") != OK:
+		push_error("fast button connect fail")
 	cell_size.x = TILE_SIZE
 	cell_size.y = TILE_SIZE
 	define_level(PlayerData.current_level)
@@ -71,7 +74,6 @@ func fill_grid(grid, value) -> void:
 
 func _input(event) -> void:
 	if event.is_action_pressed("ui_cancel"): # debugging
-		print(state)
 		OS.set_clipboard(str(state))
 	if event.is_action_pressed("left_mouse"): # changing tiles
 		var pos = (get_local_mouse_position()/TILE_SIZE).floor()
@@ -92,6 +94,12 @@ func _on_play_toggled(toggled) -> void:
 	else:
 		reset_button.disabled = toggled
 		toggle_button.text = "Play"
+
+func _on_fast_toggled(toggled) -> void:
+	if toggled:
+		timestep = 0.25
+	else:
+		timestep = 1.0
 
 func _reset() -> void:
 	active = false

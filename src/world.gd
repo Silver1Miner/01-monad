@@ -12,13 +12,15 @@ onready var moves_display = $HUD/Control/moves_display
 onready var moves_remaining_display = $HUD/Control/remaining_moves
 onready var minimap = $HUD/Control/minimap
 onready var textbox = $HUD/Control/textbox
+onready var title = $HUD/Control/level_title
 export var timestep = 1.0
 
 var has_target = false
 var generation := 0
 var moves := 0
-var initial_moves_left := 99
-var moves_left := 99
+var moves_limited = false
+var initial_moves_left := 1
+var moves_left := 1
 var active := false
 var initial_state := []
 var state := []
@@ -28,6 +30,7 @@ func _ready() -> void:
 	next_button.visible = false
 	generation_display.text = "Generation: " + str(generation)
 	moves_display.text = "Moves: " + str(moves)
+	moves_remaining_display.text = ""
 	if toggle_button.connect("toggled", self, "_on_play_toggled") != OK:
 		push_error("toggle button connect fail")
 	if reset_button.connect("pressed", self, "_reset") != OK:
@@ -39,18 +42,21 @@ func _ready() -> void:
 	define_level(PlayerData.current_level)
 
 func define_level(level):
-	if level in Levels.initials:
-		initial_state = Levels.initials[level].duplicate(true)
+	if level in Levels.levels:
+		initial_state = Levels.levels[level]["initial"].duplicate(true)
+		target_state = Levels.levels[level]["target"].duplicate(true)
+		initial_moves_left = Levels.levels[level]["moves_left"]
+		title.text = Levels.levels[level]["title"]
 	else:
 		fill_grid(initial_state, 0)
-	if level in Levels.targets:
-		target_state = Levels.targets[level].duplicate(true)
-	else:
 		fill_grid(target_state, 1)
-	if level in Levels.moves_left:
-		initial_moves_left = Levels.moves_left[level]
+		initial_moves_left = 99
+		title.text = ""
+	if level > Levels.levels.keys().max():
+		print("campaign completed")
 	if level > 0:
 		has_target = true
+		moves_limited = true
 		minimap.update()
 	if level in Levels.dialogue:
 		textbox.initialize(Levels.dialogue[level])
@@ -73,9 +79,10 @@ func _input(event) -> void:
 			state[pos.x][pos.y] = 1 - get_cellv(pos)
 			set_cellv(pos, 1 - get_cellv(pos))
 			moves += 1
-			moves_left -= 1
 			moves_display.text = "Moves: " + str(moves)
-			moves_remaining_display.text = "Moves Left: " + str(moves_left)
+			if moves_limited:
+				moves_left -= 1
+				moves_remaining_display.text = "Moves Left: " + str(moves_left)
 
 func _on_play_toggled(toggled) -> void:
 	active = toggled
@@ -93,7 +100,8 @@ func _reset() -> void:
 	moves_left = initial_moves_left
 	generation_display.text = "Generation: " + str(generation)
 	moves_display.text = "Moves: " + str(moves)
-	moves_remaining_display.text = "Moves Left: " + str(moves_left)
+	if moves_limited:
+		moves_remaining_display.text = "Moves Left: " + str(moves_left)
 	state = initial_state.duplicate(true)
 	for x in range(w):
 		for y in range(h):

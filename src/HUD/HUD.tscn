@@ -125,3 +125,9 @@ margin_bottom = -220.0
 
 [node name="textbox" parent="Control" instance=ExtResource( 3 )]
 visible = false
+
+[node name="level_title" type="Label" parent="Control"]
+anchor_right = 1.0
+margin_bottom = 48.0
+text = "Level 1: The Monad"
+align = 1

@@ -46,24 +46,28 @@ func _ready() -> void:
 	define_level(PlayerData.current_level)
 
 func define_level(level):
-	if level in Levels.levels:
+	if level in Levels.levels: # Campaign
 		initial_state = Levels.levels[level]["initial"].duplicate(true)
 		target_state = Levels.levels[level]["target"].duplicate(true)
 		initial_moves_left = Levels.levels[level]["moves_left"]
 		title.text = Levels.levels[level]["title"]
 		textbox.initialize(Levels.levels[level]["dialogue"])
-	else:
+	else: # Exception catch
 		fill_grid(initial_state, 0)
 		fill_grid(target_state, 1)
 		initial_moves_left = 99
 		title.text = ""
-	if level > Levels.levels.keys().max():
-		title.text = "Game Over"
-		print("campaign completed")
 	if level > 0:
 		has_target = true
 		moves_limited = true
 		minimap.update()
+	if level > Levels.levels.keys().max():
+		title.text = "Game Over"
+		print("campaign completed")
+		textbox.initialize(Levels.campaign_complete)
+		has_target = false
+		moves_limited = false
+		moves_remaining_display.text = ""
 	_reset()
 
 func fill_grid(grid, value) -> void:
@@ -147,9 +151,6 @@ func _tick() -> void:
 		has_target = false
 
 func _win() -> void:
-	#active = false
-	#reset_button.disabled = false
-	#toggle_button.text = "Play"
 	print("target state reached")
 	target_text.text = "Target Reached!"
 	next_button.visible = true
@@ -157,8 +158,12 @@ func _win() -> void:
 func _next_level() -> void:
 	active = false
 	toggle_button.pressed = false
-	PlayerData.current_level += 1
-	define_level(PlayerData.current_level)
+	if PlayerData.current_level > 0:
+		PlayerData.current_level += 1
+		define_level(PlayerData.current_level)
+	elif PlayerData.current_level < 0:
+		if get_tree().change_scene("res://src/menus/challenge_menu.tscn") != OK:
+			push_error("fail to load world")
 	next_button.visible = false
 
 var accumulated = 0

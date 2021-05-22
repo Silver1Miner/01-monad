@@ -13,6 +13,7 @@ onready var moves_remaining_display = $HUD/Control/left_pane/remaining_moves
 onready var fast_button = $HUD/Control/left_pane/fast_button
 onready var minimap = $HUD/Control/minimap
 onready var textbox = $HUD/Control/textbox
+onready var target_text = $HUD/Control/target
 onready var title = $HUD/Control/level_title
 export var timestep = 1.0
 
@@ -50,19 +51,19 @@ func define_level(level):
 		target_state = Levels.levels[level]["target"].duplicate(true)
 		initial_moves_left = Levels.levels[level]["moves_left"]
 		title.text = Levels.levels[level]["title"]
+		textbox.initialize(Levels.levels[level]["dialogue"])
 	else:
 		fill_grid(initial_state, 0)
 		fill_grid(target_state, 1)
 		initial_moves_left = 99
 		title.text = ""
 	if level > Levels.levels.keys().max():
+		title.text = "Game Over"
 		print("campaign completed")
 	if level > 0:
 		has_target = true
 		moves_limited = true
 		minimap.update()
-	if level in Levels.dialogue:
-		textbox.initialize(Levels.dialogue[level])
 	_reset()
 
 func fill_grid(grid, value) -> void:
@@ -75,6 +76,7 @@ func fill_grid(grid, value) -> void:
 func _input(event) -> void:
 	if event.is_action_pressed("ui_cancel"): # debugging
 		OS.set_clipboard(str(state))
+		print(PlayerData.current_level)
 	if event.is_action_pressed("left_mouse"): # changing tiles
 		var pos = (get_local_mouse_position()/TILE_SIZE).floor()
 		if pos.x >= 0 and pos.x < w and pos.y >= 0 and pos.y < h and moves_left > 0:
@@ -102,6 +104,7 @@ func _on_fast_toggled(toggled) -> void:
 		timestep = 1.0
 
 func _reset() -> void:
+	target_text.text = "Target"
 	active = false
 	generation = 0
 	moves = 0
@@ -148,14 +151,14 @@ func _win() -> void:
 	#reset_button.disabled = false
 	#toggle_button.text = "Play"
 	print("target state reached")
+	target_text.text = "Target Reached!"
 	next_button.visible = true
 
 func _next_level() -> void:
 	active = false
 	toggle_button.pressed = false
 	PlayerData.current_level += 1
-	if PlayerData.current_level in Levels.dialogue:
-		define_level(PlayerData.current_level)
+	define_level(PlayerData.current_level)
 	next_button.visible = false
 
 var accumulated = 0

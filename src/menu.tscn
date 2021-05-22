@@ -72,7 +72,7 @@ text = "New Game"
 margin_top = 122.0
 margin_right = 420.0
 margin_bottom = 224.0
-text = "Load GAme"
+text = "Levels"
 
 [node name="free" type="Button" parent="menu_options"]
 margin_top = 244.0

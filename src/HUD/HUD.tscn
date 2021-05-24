@@ -1,16 +1,10 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://assets/Kenney Pixel Square.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://assets/HUD.tres" type="Theme" id=1]
 [ext_resource path="res://src/HUD/HUD.gd" type="Script" id=2]
 [ext_resource path="res://src/HUD/textbox.tscn" type="PackedScene" id=3]
 [ext_resource path="res://src/HUD/minimap.tscn" type="PackedScene" id=4]
-
-[sub_resource type="DynamicFont" id=1]
-size = 32
-font_data = ExtResource( 1 )
-
-[sub_resource type="Theme" id=2]
-default_font = SubResource( 1 )
+[ext_resource path="res://src/HUD/data_loader.tscn" type="PackedScene" id=5]
 
 [node name="HUD" type="CanvasLayer"]
 script = ExtResource( 2 )
@@ -18,21 +12,7 @@ script = ExtResource( 2 )
 [node name="Control" type="Control" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme = SubResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="quit_to_main" type="Button" parent="Control"]
-anchor_left = 1.0
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = -400.0
-margin_top = -60.0
-margin_right = -28.0
-margin_bottom = -6.0
-text = "Quit to main menu"
+theme = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -122,27 +102,53 @@ margin_right = 350.0
 margin_bottom = 242.0
 text = "Next level"
 
-[node name="target" type="Label" parent="Control"]
-margin_left = 1520.0
-margin_top = 780.0
-margin_right = 1664.0
-margin_bottom = 828.0
-text = "Target"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="minimap" parent="Control" instance=ExtResource( 4 )]
-margin_left = -420.0
-margin_top = -260.0
-margin_right = -380.0
-margin_bottom = -220.0
-
 [node name="textbox" parent="Control" instance=ExtResource( 3 )]
-visible = false
 
 [node name="level_title" type="Label" parent="Control"]
 anchor_right = 1.0
 margin_bottom = 48.0
 text = "Level 1: The Monad"
 align = 1
+
+[node name="target" type="Control" parent="Control"]
+margin_left = 1500.0
+margin_top = 768.0
+margin_right = 1920.0
+margin_bottom = 1018.0
+rect_min_size = Vector2( 420, 250 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="target_label" type="Label" parent="Control/target"]
+margin_left = 20.0
+margin_top = 12.0
+margin_right = 164.0
+margin_bottom = 60.0
+text = "Target"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="minimap" parent="Control/target" instance=ExtResource( 4 )]
+margin_left = -420.0
+margin_top = -190.0
+margin_right = -380.0
+margin_bottom = -150.0
+
+[node name="data_loader" parent="Control" instance=ExtResource( 5 )]
+visible = false
+
+[node name="quit_to_main" type="Button" parent="Control"]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -400.0
+margin_top = -60.0
+margin_right = -28.0
+margin_bottom = -6.0
+text = "Quit to main menu"
+__meta__ = {
+"_edit_use_anchors_": false
+}

@@ -4,6 +4,7 @@ const TILE_SIZE = 32
 export(int) var w = 60
 export(int) var h = 24
 
+onready var hud_control = $HUD
 onready var toggle_button = $HUD/Control/control_buttons/toggle_time
 onready var reset_button = $HUD/Control/control_buttons/reset
 onready var next_button = $HUD/Control/control_buttons/next_level
@@ -11,10 +12,13 @@ onready var generation_display = $HUD/Control/left_pane/Generation
 onready var moves_display = $HUD/Control/left_pane/moves_display
 onready var moves_remaining_display = $HUD/Control/left_pane/remaining_moves
 onready var fast_button = $HUD/Control/left_pane/fast_button
-onready var minimap = $HUD/Control/minimap
+onready var minimap = $HUD/Control/target/minimap
 onready var textbox = $HUD/Control/textbox
-onready var target_text = $HUD/Control/target
+onready var target_text = $HUD/Control/target/target_label
 onready var title = $HUD/Control/level_title
+onready var import_button = $HUD/Control/data_loader/import
+onready var export_button = $HUD/Control/data_loader/export
+onready var input_state = $HUD/Control/data_loader/input_state
 export var timestep = 1.0
 
 var has_target = false
@@ -41,19 +45,26 @@ func _ready() -> void:
 		push_error("next level button connect fail")
 	if fast_button.connect("toggled", self, "_on_fast_toggled") != OK:
 		push_error("fast button connect fail")
+	if import_button.connect("pressed", self, "_on_import_pressed") != OK:
+		push_error("import button connect fail")
+	if export_button.connect("pressed", self, "_on_export_pressed") != OK:
+		push_error("export button connect fail")
 	cell_size.x = TILE_SIZE
 	cell_size.y = TILE_SIZE
 	define_level(PlayerData.current_level)
 
 func define_level(level):
 	if level in Levels.levels: # Campaign
+		# populate_grid(target_state, Levels.levels[level]["target"]
+		# populate_grid(initial_state, Levels.levels[level]["target"]
 		initial_state = Levels.levels[level]["initial"].duplicate(true)
 		target_state = Levels.levels[level]["target"].duplicate(true)
 		initial_moves_left = Levels.levels[level]["moves_left"]
 		title.text = Levels.levels[level]["title"]
 		textbox.initialize(Levels.levels[level]["dialogue"])
 	else: # Exception catch
-		fill_grid(initial_state, 0)
+		hud_control.set_loader_mode()
+		populate_grid(initial_state, [])
 		fill_grid(target_state, 1)
 		initial_moves_left = 99
 		title.text = ""
@@ -61,6 +72,7 @@ func define_level(level):
 		has_target = true
 		moves_limited = true
 		minimap.update()
+		hud_control.set_target_mode()
 	if level > Levels.levels.keys().max():
 		title.text = "Game Over"
 		print("campaign completed")
@@ -77,9 +89,49 @@ func fill_grid(grid, value) -> void:
 		for y in h:
 			grid[x].append(value)
 
+func populate_grid(grid, points) -> void:
+	grid.clear()
+	for x in w:
+		grid.append([])
+		for y in h:
+			if Vector2(x, y) in points:
+				grid[x].append(1)
+			else:
+				grid[x].append(0)
+
+func import_map(grid, data) -> void:
+	for x in w:
+		for y in h:
+			set_cell(x, y, 0)
+	if len(data) % 2 != 0:
+		return
+	for i in range(0, len(data), 2):
+		var x = int(data[i])
+		var y = int(data[i+1])
+		if x >= 0 and x < w and y >= 0 and y <= h:
+			grid[x][y] = 1
+			set_cell(x, y, 1)
+
+func _on_import_pressed() -> void:
+	var data = input_state.text.split("/")
+	import_map(state, data)
+	print(data)
+
+func _on_export_pressed() -> void:
+	var data = ""
+	for x in len(state):
+		for y in len(state[x]):
+			if state[x][y] == 1:
+				data += str(x)
+				data += "/"
+				data += str(y)
+				data += "/"
+	data.erase(data.length() - 1, 1)
+	input_state.text = data
+	OS.set_clipboard(data)
+
 func _input(event) -> void:
 	if event.is_action_pressed("ui_cancel"): # debugging
-		OS.set_clipboard(str(state))
 		print(PlayerData.current_level)
 	if event.is_action_pressed("left_mouse"): # changing tiles
 		var pos = (get_local_mouse_position()/TILE_SIZE).floor()

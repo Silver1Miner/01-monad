@@ -140,6 +140,7 @@ margin_bottom = -150.0
 visible = false
 
 [node name="quit_to_main" type="Button" parent="Control"]
+pause_mode = 2
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0

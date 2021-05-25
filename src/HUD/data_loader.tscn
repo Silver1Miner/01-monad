@@ -35,6 +35,7 @@ margin_bottom = 112.0
 rect_min_size = Vector2( 0, 60 )
 theme = SubResource( 1 )
 custom_fonts/font = SubResource( 2 )
+wrap_enabled = true
 __meta__ = {
 "_edit_use_anchors_": false
 }

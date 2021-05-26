@@ -10,7 +10,7 @@ onready var reset_button = $HUD/Control/control_buttons/reset
 onready var next_button = $HUD/Control/control_buttons/next_level
 onready var generation_display = $HUD/Control/left_pane/Generation
 onready var moves_display = $HUD/Control/left_pane/moves_display
-onready var moves_remaining_display = $HUD/Control/left_pane/remaining_moves
+onready var par_display = $HUD/Control/left_pane/par_display
 onready var fast_button = $HUD/Control/left_pane/fast_button
 onready var minimap = $HUD/Control/target/minimap
 onready var textbox = $HUD/Control/textbox
@@ -24,9 +24,10 @@ export var timestep = 1.0
 var has_target = false
 var generation := 0
 var moves := 0
-var moves_limited = false
+#var moves_limited = false
 var initial_moves_left := 1
 var moves_left := 1
+var par := 0
 var active := false
 var initial_state := []
 var state := []
@@ -36,7 +37,7 @@ func _ready() -> void:
 	next_button.visible = false
 	generation_display.text = "Generation: " + str(generation)
 	moves_display.text = "Moves: " + str(moves)
-	moves_remaining_display.text = ""
+	par_display.text = ""
 	if toggle_button.connect("toggled", self, "_on_play_toggled") != OK:
 		push_error("toggle button connect fail")
 	if reset_button.connect("pressed", self, "_reset") != OK:
@@ -60,6 +61,7 @@ func define_level(level):
 		#initial_state = Levels.levels[level]["initial"].duplicate(true)
 		#target_state = Levels.levels[level]["target"].duplicate(true)
 		initial_moves_left = Levels.levels[level]["moves_left"]
+		par = Levels.levels[level]["par"]
 		title.text = Levels.levels[level]["title"]
 		textbox.initialize(Levels.levels[level]["dialogue"])
 	else: # Exception catch
@@ -70,7 +72,7 @@ func define_level(level):
 		title.text = ""
 	if level > 0: # Campaign
 		has_target = true
-		moves_limited = true
+		#moves_limited = true
 		hud_control.set_target_mode()
 		minimap.update()
 	if level > Levels.levels.keys().max():
@@ -78,8 +80,8 @@ func define_level(level):
 		print("campaign completed")
 		textbox.initialize(Levels.campaign_complete)
 		has_target = false
-		moves_limited = false
-		moves_remaining_display.text = ""
+		#moves_limited = false
+		par_display.text = ""
 	_reset()
 
 func fill_grid(grid, value) -> void:
@@ -141,9 +143,9 @@ func _input(event) -> void:
 			set_cellv(pos, 1 - get_cellv(pos))
 			moves += 1
 			moves_display.text = "Moves: " + str(moves)
-			if moves_limited:
-				moves_left -= 1
-				moves_remaining_display.text = "Moves Left: " + str(moves_left)
+			#if moves_limited:
+			#	moves_left -= 1
+			#	par_display.text = "Par: " + str(par)
 
 func _on_play_toggled(toggled) -> void:
 	active = toggled
@@ -168,8 +170,8 @@ func _reset() -> void:
 	moves_left = initial_moves_left
 	generation_display.text = "Generation: " + str(generation)
 	moves_display.text = "Moves: " + str(moves)
-	if moves_limited:
-		moves_remaining_display.text = "Moves Left: " + str(moves_left)
+	if has_target:
+		par_display.text = "Par: " + str(par)
 	state = initial_state.duplicate(true)
 	for x in range(w):
 		for y in range(h):
@@ -208,9 +210,9 @@ func _win() -> void:
 	target_text.text = "Target Reached!"
 	next_button.visible = true
 	if PlayerData.current_level > 0:
-		PlayerData.update_level_progress()
+		PlayerData.update_level_progress(moves <= par)
 	elif PlayerData.current_level <= 0:
-		PlayerData.update_challenge_progress()
+		PlayerData.update_challenge_progress(moves <= par)
 
 func _next_level() -> void:
 	active = false

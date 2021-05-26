@@ -131,7 +131,9 @@ func _on_export_pressed() -> void:
 
 func _input(event) -> void:
 	if event.is_action_pressed("ui_cancel"): # debugging
-		print(PlayerData.current_level)
+		print("current level: ", PlayerData.current_level)
+		print("completed levels: ", PlayerData.completed_levels)
+		print("completed challenges: ", PlayerData.completed_challenges)
 	if event.is_action_pressed("left_mouse"): # changing tiles
 		var pos = (get_local_mouse_position()/TILE_SIZE).floor()
 		if pos.x >= 0 and pos.x < w and pos.y >= 0 and pos.y < h and moves_left > 0:
@@ -205,6 +207,10 @@ func _win() -> void:
 	print("target state reached")
 	target_text.text = "Target Reached!"
 	next_button.visible = true
+	if PlayerData.current_level > 0:
+		PlayerData.update_level_progress()
+	elif PlayerData.current_level <= 0:
+		PlayerData.update_challenge_progress()
 
 func _next_level() -> void:
 	active = false
@@ -212,7 +218,7 @@ func _next_level() -> void:
 	if PlayerData.current_level > 0:
 		PlayerData.current_level += 1
 		define_level(PlayerData.current_level)
-	elif PlayerData.current_level < 0:
+	elif PlayerData.current_level <= 0:
 		if get_tree().change_scene("res://src/menus/challenge_menu.tscn") != OK:
 			push_error("fail to load world")
 	next_button.visible = false

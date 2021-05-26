@@ -12,8 +12,6 @@ func _ready() -> void:
 		push_error("level select button connect fail")
 	if $menu_options/trophies.connect("pressed", self, "_on_trophies_pressed") != OK:
 		push_error("trophies button connect fail")
-	if $menu_options/challenge_select.connect("pressed", self, "_on_challenge_pressed") != OK:
-		push_error("challenge button connect fail")
 
 func _on_new_game_pressed() -> void:
 	PlayerData.current_level = 1
@@ -24,10 +22,6 @@ func _on_level_select_pressed() -> void:
 	if get_tree().change_scene("res://src/menus/level_menu.tscn") != OK:
 		push_error("fail to load world")
 
-func _on_challenge_pressed() -> void:
-	if get_tree().change_scene("res://src/menus/challenge_menu.tscn") != OK:
-		push_error("fail to load challenges")
-
 func _on_free_pressed() -> void:
 	PlayerData.current_level = 0
 	if get_tree().change_scene("res://src/world.tscn") != OK:
@@ -35,7 +29,7 @@ func _on_free_pressed() -> void:
 
 func _on_trophies_pressed() -> void:
 	if get_tree().change_scene("res://src/menus/trophies_menu.tscn") != OK:
-		push_error("fail to laod trophies")
+		push_error("fail to load trophies")
 
 func _on_quit_pressed() -> void:
 	get_tree().quit()

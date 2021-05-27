@@ -5,8 +5,8 @@ var current_level = 1
 var current_challenge = 0
 var completed_levels = [1]
 
-var number_challenges = 10
-var completed_challenges = []
+var number_challenges = 3
+var completed_challenges = [1]
 
 func _ready():
 	for i in NUMBER_LEVELS:
@@ -25,7 +25,7 @@ func update_challenge_progress(beat_par) -> void:
 	if completed_levels[current_challenge] == 0:
 		completed_challenges[current_challenge] = 1
 	if beat_par:
-		completed_levels[current_level] = 3
+		completed_challenges[current_challenge] = 2
 	save_state()
 
 func load_state() -> void:

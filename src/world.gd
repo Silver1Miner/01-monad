@@ -58,12 +58,19 @@ func define_level(level):
 	if level in Levels.levels: # Campaign
 		populate_grid(target_state, Levels.levels[level]["target"])
 		populate_grid(initial_state, Levels.levels[level]["initial"])
-		#initial_state = Levels.levels[level]["initial"].duplicate(true)
-		#target_state = Levels.levels[level]["target"].duplicate(true)
 		initial_moves_left = Levels.levels[level]["moves_left"]
 		par = Levels.levels[level]["par"]
 		title.text = Levels.levels[level]["title"]
-		textbox.initialize(Levels.levels[level]["dialogue"])
+		if "dialogue" in Levels.levels[level]:
+			textbox.initialize(Levels.levels[level]["dialogue"])
+	elif level < 0: # Challenge
+		populate_grid(target_state, Levels.challenges[PlayerData.current_challenge]["target"])
+		populate_grid(initial_state, Levels.challenges[PlayerData.current_challenge]["initial"])
+		par = Levels.challenges[PlayerData.current_challenge]["par"]
+		title.text = Levels.challenges[PlayerData.current_challenge]["title"]
+		has_target = true
+		hud_control.set_target_mode()
+		minimap.update()
 	else: # Exception catch
 		hud_control.set_loader_mode()
 		fill_grid(initial_state, 0)
@@ -221,7 +228,7 @@ func _next_level() -> void:
 		PlayerData.current_level += 1
 		define_level(PlayerData.current_level)
 	elif PlayerData.current_level <= 0:
-		if get_tree().change_scene("res://src/menus/challenge_menu.tscn") != OK:
+		if get_tree().change_scene("res://src/menus/level_menu.tscn") != OK:
 			push_error("fail to load world")
 	next_button.visible = false
 

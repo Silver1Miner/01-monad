@@ -64,6 +64,16 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="ColorRect" type="ColorRect" parent="Control"]
+margin_left = 420.0
+margin_top = 768.0
+margin_right = 1500.0
+margin_bottom = 1080.0
+color = Color( 0.203922, 0.203922, 0.203922, 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="control_buttons" type="VBoxContainer" parent="Control"]
 anchor_left = 0.5
 anchor_top = 1.0

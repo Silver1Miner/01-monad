@@ -33,3 +33,8 @@ func _draw():
 		for x in w:
 			for y in h:
 				draw_rect(Rect2(Vector2(x,y) * 6, Vector2.ONE * 6), color_map[grid[x][y]])
+	elif level < 0:
+		populate_grid(Levels.challenges[PlayerData.current_challenge]["target"])
+		for x in w:
+			for y in h:
+				draw_rect(Rect2(Vector2(x,y) * 6, Vector2.ONE * 6), color_map[grid[x][y]])

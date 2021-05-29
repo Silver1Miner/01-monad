@@ -50,7 +50,7 @@ __meta__ = {
 
 [node name="options" type="VBoxContainer" parent="choices"]
 margin_right = 800.0
-margin_bottom = 980.0
+margin_bottom = 986.0
 rect_min_size = Vector2( 800, 800 )
 __meta__ = {
 "_edit_use_anchors_": false
@@ -83,7 +83,7 @@ theme = ExtResource( 4 )
 [node name="Credits" type="VBoxContainer" parent="choices"]
 margin_left = 804.0
 margin_right = 1604.0
-margin_bottom = 980.0
+margin_bottom = 986.0
 rect_min_size = Vector2( 800, 0 )
 
 [node name="Label" type="Label" parent="choices/Credits"]
@@ -95,20 +95,22 @@ align = 1
 [node name="MarginContainer" type="MarginContainer" parent="choices/Credits"]
 margin_top = 76.0
 margin_right = 800.0
-margin_bottom = 926.0
-custom_constants/margin_top = 50
+margin_bottom = 986.0
+custom_constants/margin_top = 10
 custom_constants/margin_left = 50
 
 [node name="RichTextLabel" type="RichTextLabel" parent="choices/Credits/MarginContainer"]
 margin_left = 50.0
-margin_top = 50.0
+margin_top = 10.0
 margin_right = 800.0
-margin_bottom = 850.0
-rect_min_size = Vector2( 0, 800 )
+margin_bottom = 910.0
+rect_min_size = Vector2( 0, 900 )
 theme = ExtResource( 4 )
 bbcode_enabled = true
 bbcode_text = "\"The Monad\"
 By Jack Anderson
+
+Based on \"Life\" by John Conway
 
 Art
 Additional CC0 Assets from:
@@ -121,11 +123,12 @@ By Yanagi Seigen
 [color=#88454545](Aka Jack Anderson)[/color]
 Additional CC0 Assets From:
 Kenney
-
-[color=#88454545]Built in Godot Engine[/color]
+								[color=#88454545]Built in Godot Engine[/color]
 "
 text = "\"The Monad\"
 By Jack Anderson
+
+Based on \"Life\" by John Conway
 
 Art
 Additional CC0 Assets from:
@@ -138,6 +141,5 @@ By Yanagi Seigen
 (Aka Jack Anderson)
 Additional CC0 Assets From:
 Kenney
-
-Built in Godot Engine
+								Built in Godot Engine
 "

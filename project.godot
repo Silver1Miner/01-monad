@@ -14,6 +14,7 @@ config/name="The Monad"
 config/description="I am the Monad, the Ultimate, the All, the One. All that exists comes from me."
 run/main_scene="res://src/menu.tscn"
 boot_splash/image="res://assets/menu_background.png"
+boot_splash/fullsize=false
 config/icon="res://monad.png"
 config/windows_native_icon="res://monad.ico"
 

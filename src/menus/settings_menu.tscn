@@ -68,15 +68,16 @@ __meta__ = {
 [node name="colorlabel" type="Label" parent="choices/options"]
 margin_top = 76.0
 margin_right = 800.0
-margin_bottom = 175.0
+margin_bottom = 226.0
 theme = ExtResource( 4 )
 text = "
+
 Cell Color Picker"
 
 [node name="ColorPicker" type="ColorPicker" parent="choices/options"]
-margin_top = 179.0
+margin_top = 230.0
 margin_right = 800.0
-margin_bottom = 859.0
+margin_bottom = 910.0
 theme = ExtResource( 4 )
 
 [node name="Credits" type="VBoxContainer" parent="choices"]
@@ -110,23 +111,33 @@ bbcode_text = "\"The Monad\"
 By Jack Anderson
 
 Art
-By Yang Zhengyuan
-[color=#88555555](Aka Jack Anderson)[/color]
+Additional CC0 Assets from:
+Kenney
+Pixabay.com
 
 Music
 \"One to Two to Three\"
 By Yanagi Seigen
-[color=#88555555](Aka Jack Anderson)[/color]
+[color=#88454545](Aka Jack Anderson)[/color]
+Additional CC0 Assets From:
+Kenney
+
+[color=#88454545]Built in Godot Engine[/color]
 "
 text = "\"The Monad\"
 By Jack Anderson
 
 Art
-By Yang Zhengyuan
-(Aka Jack Anderson)
+Additional CC0 Assets from:
+Kenney
+Pixabay.com
 
 Music
 \"One to Two to Three\"
 By Yanagi Seigen
 (Aka Jack Anderson)
+Additional CC0 Assets From:
+Kenney
+
+Built in Godot Engine
 "

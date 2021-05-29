@@ -11,7 +11,7 @@ onready var next_button = $HUD/Control/control_buttons/next_level
 onready var generation_display = $HUD/Control/left_pane/Generation
 onready var moves_display = $HUD/Control/left_pane/moves_display
 onready var par_display = $HUD/Control/left_pane/par_display
-onready var fast_button = $HUD/Control/left_pane/fast_button
+onready var fast_button = $HUD/Control/left_pane/speed/fast_button
 onready var minimap = $HUD/Control/target/minimap
 onready var textbox = $HUD/Control/textbox
 onready var target_text = $HUD/Control/target/target_label
@@ -19,6 +19,7 @@ onready var title = $HUD/Control/level_title
 onready var import_button = $HUD/Control/data_loader/import
 onready var export_button = $HUD/Control/data_loader/export
 onready var input_state = $HUD/Control/data_loader/input_state
+onready var control_color = $HUD/Control/control_color
 export var timestep = 1.0
 
 var has_target = false
@@ -45,7 +46,7 @@ func _ready() -> void:
 		push_error("reset button connect fail")
 	if next_button.connect("pressed", self, "_next_level") != OK:
 		push_error("next level button connect fail")
-	if fast_button.connect("toggled", self, "_on_fast_toggled") != OK:
+	if fast_button.connect("value_changed", self, "_on_speed_changed") != OK:
 		push_error("fast button connect fail")
 	if import_button.connect("pressed", self, "_on_import_pressed") != OK:
 		push_error("import button connect fail")
@@ -152,6 +153,7 @@ func _input(event) -> void:
 		if pos.x >= 0 and pos.x < w and pos.y >= 0 and pos.y < h and moves_left > 0:
 			state[pos.x][pos.y] = 1 - get_cellv(pos)
 			set_cellv(pos, 1 - get_cellv(pos))
+			$click.play()
 			moves += 1
 			moves_display.text = "Moves: " + str(moves)
 			#if moves_limited:
@@ -167,11 +169,15 @@ func _on_play_toggled(toggled) -> void:
 		reset_button.disabled = toggled
 		toggle_button.text = "Play"
 
-func _on_fast_toggled(toggled) -> void:
-	if toggled:
-		timestep = 0.25
-	else:
+func _on_speed_changed(value) -> void:
+	if value == 1:
 		timestep = 1.0
+	elif value == 2:
+		timestep = 0.5
+	elif value == 3:
+		timestep = 0.25
+	elif value == 4:
+		timestep = 0.125
 
 func _reset() -> void:
 	target_text.text = "Target"
@@ -219,6 +225,7 @@ func _tick() -> void:
 func _win() -> void:
 	print("target state reached")
 	target_text.text = "Target Reached!"
+	control_color.color = Color(100/255.0,100/255.0,100/255.0)
 	next_button.visible = true
 	if PlayerData.current_level > 0:
 		PlayerData.update_level_progress(moves <= par)
@@ -226,6 +233,7 @@ func _win() -> void:
 		PlayerData.update_challenge_progress(moves <= par)
 
 func _next_level() -> void:
+	control_color.color = Color(20/255.0,20/255.0,20/255.0)
 	active = false
 	toggle_button.pressed = false
 	if PlayerData.current_level > 0:

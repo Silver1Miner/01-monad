@@ -34,6 +34,7 @@ var state := []
 var target_state := []
 
 func _ready() -> void:
+	change_cell_color(PlayerData.current_color)
 	next_button.visible = false
 	generation_display.text = "Generation: " + str(generation)
 	moves_display.text = "Moves: " + str(moves)
@@ -111,6 +112,9 @@ func populate_grid(grid, level_string) -> void:
 			var y = int(n) / w
 			if x >= 0 and x < w and y >= 0 and y <= h:
 				grid[x][y] = 1
+
+func change_cell_color(color) -> void:
+	tile_set.tile_set_modulate(1, color)
 
 func import_map(grid, data) -> void:
 	for x in w:

@@ -1,17 +1,15 @@
 extends Node
 
-const NUMBER_LEVELS = 12
 var current_level = 1
 var current_challenge = 0
 var completed_levels = [1]
-
-var number_challenges = 3
 var completed_challenges = [1]
+var current_color = Color(1,1,1)
 
 func _ready():
-	for i in NUMBER_LEVELS:
+	for i in len(Levels.levels):
 		completed_levels.append(0)
-	for i in number_challenges:
+	for i in len(Levels.challenges):
 		completed_challenges.append(0)
 	load_state()
 

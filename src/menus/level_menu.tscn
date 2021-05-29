@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://assets/menu_background.png" type="Texture" id=1]
 [ext_resource path="res://src/menus/level_menu.gd" type="Script" id=2]
 [ext_resource path="res://assets/menu.tres" type="Theme" id=3]
+[ext_resource path="res://assets/HUD.tres" type="Theme" id=4]
 
 [node name="level_menu" type="Control"]
 anchor_right = 1.0
@@ -94,6 +95,17 @@ margin_left = -374.0
 margin_top = -102.0
 margin_right = 374.0
 text = "Back to main menu"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="clear_progress" type="Button" parent="."]
+anchor_left = 1.0
+anchor_right = 1.0
+margin_left = -328.0
+margin_bottom = 54.0
+theme = ExtResource( 4 )
+text = "Clear Progress"
 __meta__ = {
 "_edit_use_anchors_": false
 }

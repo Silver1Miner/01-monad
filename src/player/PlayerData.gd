@@ -13,6 +13,15 @@ func _ready():
 		completed_challenges.append(0)
 	load_state()
 
+func reset() -> void:
+	completed_challenges = [1]
+	completed_levels = [1]
+	for i in len(Levels.levels):
+		completed_levels.append(0)
+	for i in len(Levels.challenges):
+		completed_challenges.append(0)
+	save_state()
+
 func update_level_progress(beat_par) -> void:
 	if completed_levels[current_level] == 0:
 		completed_levels[current_level] = 1

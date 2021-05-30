@@ -1,9 +1,10 @@
-extends TileMap
+extends Node2D
 
 const TILE_SIZE = 32
 export(int) var w = 60
 export(int) var h = 24
 
+onready var grid = $TileMap
 onready var hud_control = $HUD
 onready var toggle_button = $HUD/Control/control_buttons/toggle_time
 onready var reset_button = $HUD/Control/control_buttons/reset
@@ -55,8 +56,8 @@ func _ready() -> void:
 		push_error("export button connect fail")
 	if randomize_button.connect("pressed", self, "_on_random_pressed") != OK:
 		push_error("randomize button connect fail")
-	cell_size.x = TILE_SIZE
-	cell_size.y = TILE_SIZE
+	grid.cell_size.x = TILE_SIZE
+	grid.cell_size.y = TILE_SIZE
 	define_level(PlayerData.current_level)
 
 func define_level(level):
@@ -99,40 +100,40 @@ func define_level(level):
 		par_display.text = ""
 	_reset()
 
-func fill_grid(grid, value) -> void:
-	grid.clear()
+func fill_grid(grid_state, value) -> void:
+	grid_state.clear()
 	for x in w:
-		grid.append([])
+		grid_state.append([])
 		for y in h:
-			grid[x].append(value)
+			grid_state[x].append(value)
 
-func populate_grid(grid, level_string) -> void:
+func populate_grid(grid_state, level_string) -> void:
 	var data = level_string.split("a")
-	grid.clear()
+	grid_state.clear()
 	for x in w:
-		grid.append([])
+		grid_state.append([])
 		for y in h:
-			grid[x].append(0)
+			grid_state[x].append(0)
 	for n in data:
 		if n != "":
 			var x = int(n) % w
 			var y = int(n) / w
 			if x >= 0 and x < w and y >= 0 and y <= h:
-				grid[x][y] = 1
+				grid_state[x][y] = 1
 
 func change_cell_color(color) -> void:
-	tile_set.tile_set_modulate(1, color)
+	grid.tile_set.tile_set_modulate(1, color)
 
-func import_map(grid, data) -> void:
+func import_map(grid_state, data) -> void:
 	for x in w:
 		for y in h:
-			set_cell(x, y, 0)
+			grid.set_cell(x, y, 0)
 	for n in data:
 		var x = int(n) % w
 		var y = int(n) / w
 		if x >= 0 and x < w and y >= 0 and y <= h:
-			grid[x][y] = 1
-			set_cell(x, y, 1)
+			grid_state[x][y] = 1
+			grid.set_cell(x, y, 1)
 
 func _on_import_pressed() -> void:
 	var data = input_state.text.split("a")
@@ -156,10 +157,11 @@ func _on_random_pressed() -> void:
 			rng.randomize()
 			var random_number = rng.randi_range(0, 1)
 			state[x][y] = random_number
-			set_cell(x, y, random_number)
+			grid.set_cell(x, y, random_number)
 
 var drag_enabled = false
 var pos = Vector2(0,0)
+var pas_rel = Vector2(0,0)
 func _input(event) -> void:
 	if event.is_action_pressed("ui_cancel"): # debugging
 		print("current level: ", PlayerData.current_level)
@@ -169,8 +171,25 @@ func _input(event) -> void:
 		drag_enabled = true
 		pos = (get_local_mouse_position()/TILE_SIZE).floor()
 		if pos.x >= 0 and pos.x < w and pos.y >= 0 and pos.y < h and moves_left > 0:
-			state[pos.x][pos.y] = 1 - get_cellv(pos)
-			set_cellv(pos, 1 - get_cellv(pos))
+			state[pos.x][pos.y] = 1 - grid.get_cellv(pos)
+			grid.set_cellv(pos, 1 - grid.get_cellv(pos))
+			$click.play()
+			moves += 1
+			moves_display.text = "Moves: " + str(moves)
+	elif event is InputEventScreenDrag: # mobile dragging
+		var rel = (event.position/TILE_SIZE).floor()
+		if rel != pas_rel and rel != pos and rel.x >= 0 and rel.x < w and rel.y >= 0 and rel.y < h and moves_left > 0:
+			state[rel.x][rel.y] = 1 - grid.get_cellv(rel)
+			grid.set_cellv(rel, 1 - grid.get_cellv(rel))
+			$click.play()
+			moves += 1
+			moves_display.text = "Moves: " + str(moves)
+		pas_rel = rel
+	elif event is InputEventScreenTouch and event.is_pressed(): # mobile touch controls, no dragging
+		pos = (event.position/TILE_SIZE).floor()
+		if pos.x >= 0 and pos.x < w and pos.y >= 0 and pos.y < h and moves_left > 0:
+			state[pos.x][pos.y] = 1 - grid.get_cellv(pos)
+			grid.set_cellv(pos, 1 - grid.get_cellv(pos))
 			$click.play()
 			moves += 1
 			moves_display.text = "Moves: " + str(moves)
@@ -210,7 +229,7 @@ func _reset() -> void:
 	state = initial_state.duplicate(true)
 	for x in range(w):
 		for y in range(h):
-			set_cell(x, y, state[x][y])
+			grid.set_cell(x, y, state[x][y])
 
 func _tick() -> void:
 	if !active:
@@ -221,9 +240,9 @@ func _tick() -> void:
 			for x_offset in [-1, 0, 1]:
 				for y_offset in [-1, 0, 1]:
 					if x_offset != y_offset or x_offset != 0:
-						if get_cell(x+x_offset,y+y_offset) == 1:
+						if grid.get_cell(x+x_offset,y+y_offset) == 1:
 							live_neighbors += 1
-			if get_cell(x, y) == 1:
+			if grid.get_cell(x, y) == 1:
 				if live_neighbors in [2, 3]:
 					state[x][y] = 1
 				else:
@@ -235,13 +254,13 @@ func _tick() -> void:
 					state[x][y] = 0
 	for x in range(w):
 		for y in range(h):
-			set_cell(x, y, state[x][y])
+			grid.set_cell(x, y, state[x][y])
 	if has_target and state == target_state:
 		_win()
 		has_target = false
 
 func _win() -> void:
-	print("target state reached")
+	# print("target state reached")
 	target_text.text = "Target Reached!"
 	control_color.color = Color(100/255.0,100/255.0,100/255.0)
 	next_button.visible = true
@@ -268,8 +287,8 @@ func _process(delta):
 		var new_pos = (get_local_mouse_position()/TILE_SIZE).floor()
 		if new_pos != pos and new_pos.x >= 0 and new_pos.x < w and new_pos.y >= 0 and new_pos.y < h and moves_left > 0:
 			pos = new_pos
-			state[pos.x][pos.y] = 1 - get_cellv(pos)
-			set_cellv(pos, 1 - get_cellv(pos))
+			state[pos.x][pos.y] = 1 - grid.get_cellv(pos)
+			grid.set_cellv(pos, 1 - grid.get_cellv(pos))
 			$click.play()
 			moves += 1
 			moves_display.text = "Moves: " + str(moves)

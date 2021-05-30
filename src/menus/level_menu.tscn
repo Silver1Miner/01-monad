@@ -37,7 +37,7 @@ __meta__ = {
 [node name="level_label" type="Label" parent="VBoxContainer"]
 margin_right = 1720.0
 margin_bottom = 72.0
-text = "Levels            "
+text = "Levels        "
 align = 1
 __meta__ = {
 "_edit_use_anchors_": false
@@ -55,7 +55,7 @@ margin_bottom = 380.0
 grow_horizontal = 0
 grow_vertical = 0
 custom_constants/vseparation = 10
-custom_constants/hseparation = 150
+custom_constants/hseparation = 160
 columns = 3
 
 [node name="challenge_label" type="Label" parent="VBoxContainer"]
@@ -83,7 +83,7 @@ margin_bottom = 380.0
 grow_horizontal = 0
 grow_vertical = 0
 custom_constants/vseparation = 10
-custom_constants/hseparation = 150
+custom_constants/hseparation = 160
 columns = 3
 
 [node name="quit_to_main" type="Button" parent="."]

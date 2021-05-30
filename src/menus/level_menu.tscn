@@ -37,7 +37,7 @@ __meta__ = {
 [node name="level_label" type="Label" parent="VBoxContainer"]
 margin_right = 1720.0
 margin_bottom = 72.0
-text = "Levels"
+text = "Levels            "
 align = 1
 __meta__ = {
 "_edit_use_anchors_": false
@@ -62,7 +62,7 @@ columns = 3
 margin_top = 492.0
 margin_right = 1720.0
 margin_bottom = 564.0
-text = "Challenges"
+text = "Challenges        "
 align = 1
 __meta__ = {
 "_edit_use_anchors_": false

@@ -43,6 +43,7 @@ func load_state() -> void:
 	save_game.open("user://monad.save", File.READ)
 	completed_levels = parse_json(save_game.get_line())
 	completed_challenges = parse_json(save_game.get_line())
+	current_color = Color(save_game.get_line())
 	save_game.close()
 
 func save_state() -> void:
@@ -50,4 +51,5 @@ func save_state() -> void:
 	save_game.open("user://monad.save", File.WRITE)
 	save_game.store_line(to_json(completed_levels))
 	save_game.store_line(to_json(completed_challenges))
+	save_game.store_line(current_color.to_html())
 	save_game.close()

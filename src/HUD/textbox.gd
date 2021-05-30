@@ -8,6 +8,7 @@ onready var text = $textbox/text
 onready var nametag = $textbox/nametag
 onready var timer = $Timer
 onready var next_button = $textbox/next
+onready var skip_button = $textbox/skip
 
 func _ready() -> void:
 	timer.wait_time = 0.05
@@ -16,6 +17,8 @@ func _ready() -> void:
 		push_error("timer connect fail")
 	if next_button.connect("pressed", self, "_on_next_pressed") != OK:
 		push_error("next button connect fail")
+	if skip_button.connect("pressed", self, "_on_skip_pressed") != OK:
+		push_error("skip button connect fail")
 	visible = false
 
 func initialize(scene) -> void:
@@ -43,6 +46,10 @@ func _on_next_pressed() -> void:
 				end_text()
 		else:
 			text.set_visible_characters(text.get_total_character_count())
+
+func _on_skip_pressed() -> void:
+	if text_playing:
+		end_text()
 
 func _input(event) -> void:
 	if text_playing:

@@ -180,6 +180,7 @@ func _input(event) -> void:
 func _on_play_toggled(toggled) -> void:
 	active = toggled
 	if toggled:
+		yield(get_tree().create_timer(Music.time - floor(Music.time)), "timeout")
 		reset_button.disabled = toggled
 		toggle_button.text = "Playing"
 	else:
